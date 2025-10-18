@@ -65,37 +65,38 @@ void AcaoDeAtaque(struct Territorio mapa[MAX_TerritorioS]){
 
     int territorioatacante;
     int territoriodefensor;
-
+// Quem irá atacar
     printf("\n--- FASE DE ATAQUE ---");
     printf("\nEscolha o território atacante [1 a 5 || 0 para sair]: ");
     scanf("%d", &territorioatacante);
     territorioatacante--;
-
+// Quem será atacado
     if (territorioatacante != -1){
         printf("Escolha o território para defender [1 a 5]: ");
         scanf("%d", &territoriodefensor);
             
         territoriodefensor--;
-
+// Randomizando os dados
         int dadoataque = rand() % 10;
         int dadodefesa = rand() % 10;
         printf("\n--- RESULTADO DA BATALHA ---\n");
         printf("O atacante %s rolou um dado e tirou: %d\n", mapa[territorioatacante].nome, dadoataque);
         printf("O defensor %s rolou um dado e tirou: %d\n", mapa[territoriodefensor].nome, dadodefesa);
-
+// Vitória do ataque
         if (dadoataque > dadodefesa){
             printf("VITÓRIA DO ATAQUE! O defensor perdeu 1 tropa.\n");
-                
+                // Conquista do ataque
             if (mapa[territoriodefensor].tropas == 1){
                 printf("CONQUISTA! O território %s foi dominado pelo exército %s", mapa[territoriodefensor].nome, mapa[territorioatacante].cor);
                 // Copiando o exército de "território atacante" para o do defensor
                 strcpy(mapa[territoriodefensor].cor, mapa[territorioatacante].cor);
-            } else {
+            } else { 
                 mapa[territoriodefensor].tropas--;
             }
-        } else {
+            // Vitória da defesa
+        } else { 
             printf("VITÓRIA DA DEFESA! O atacante perdeu 1 tropa.\n");
-
+            // Conquista da defesa
             if ((mapa[territoriodefensor].tropas) <= 1){
                 printf("CONQUISTA! O território %s foi dominado pelo exército %s", mapa[territorioatacante].nome, mapa[territoriodefensor].cor);
                 // Copiando o exército de "território defensor" para o do atacante
@@ -156,13 +157,17 @@ int main(){
     // Liberando espaço com malloc
     mapa = (struct Territorio *) malloc(MAX_TerritorioS * sizeof(struct Territorio));
 
+    // Criação do exército que irá atacar e do exército alvo para as missões
     srand(time(NULL));
     int exercitocacador = rand() % 5;
     int exercitoalvo = rand() % 5;
     int opcao;
 
+// Cadastrando os territórios 
+    
     CadastrodeTerritorios(mapa);
-
+    
+// Começando o dowhile mostrando as opções disponíveis
     do{
         MostrandoTerritorios(mapa);
         missaoescolhida(exercitocacador, exercitoalvo, mapa);
@@ -170,23 +175,34 @@ int main(){
         printf("1 - ATACAR \n2 - VERIFICAR MISSÃO \n0 - SAIR\n");
         printf("Escolha sua ação: \n");
         scanf("%d", &opcao);
-
+        
+// Criação das opções escolhidas.
         switch (opcao){
             case 1:
+                // chamando o ataque
                 AcaoDeAtaque(mapa);
                 break;
 
             case 2:
+                // verificando o andamento da missão
                 andamentodamissao(exercitocacador, exercitoalvo, mapa, missaoescolhida(exercitocacador, exercitoalvo, mapa));
                 break;
 
             case 0:
+                // encerrando o programa
                 printf("Encerrando...\n");
                 break;
+            
+            default:
+                // Isso ocorre caso apareça algum número diferente
+            printf("Essa opção não existe!");
+            break;
+            
         }
         limparBufferEntrada();
     } while (opcao != 0);
-
+    // Liberando o espaço
     free(mapa);
+    printf("Espaço liberado!!");
     return 0;
 }
